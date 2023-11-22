@@ -1,14 +1,19 @@
 import csv
 from tkinter import *
 from datetime import datetime
+from time import localtime
 
 def open_add():
     top = Toplevel(root)
+    def timer():
+        current_time = localtime()
+        return f"{current_time[0]}/{current_time[1]}/{current_time[2]}"
+
 
     def add(name, description, due_date):
         with open('tasks.csv', 'a', newline='') as file:
             writer = csv.writer(file)
-            writer.writerow([name, description, due_date.strftime('%Y-%m-%d')])
+            writer.writerow([name, description, due_date.strftime('%Y-%m-%d'),timer()])
         top.destroy()  
         listbox.insert(END, name)
 
@@ -104,8 +109,8 @@ def info():
             tasks = list(csv.reader(file))
 
             for row in tasks:
-                if row and len(row) > 2 and row[0].strip() == name.strip():
-                    label2 = Label(top, text=f'Task Description: {row[1]}\nDue Date: {row[2]}')
+                if  row[0].strip() == name.strip():
+                    label2 = Label(top, text=f'Task Description: {row[1]}\nTime added: {row[3]}\nDue Date: {row[2]}')
                     label2.pack()
 
     def destro():
@@ -146,7 +151,7 @@ def check_completed():
     btn = Button(top, text='OK', command=destro)
     btn.pack()
 
-# New feature: Display overdue tasks
+
 def overdue_tasks():
     top = Toplevel(root)
 
